@@ -1,22 +1,101 @@
 #include "CMT.h"
 #include "gui.h"
 
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
+#include <fstream>
+
+#ifdef __GNUC__
+#include <getopt.h>
+#else
+#include "getopt/getopt.h"
+#endif
+
 
 using cmt::CMT;
-using cv::Scalar;
+using cv::imread;
 using cv::namedWindow;
+using cv::Scalar;
 using cv::VideoCapture;
 using cv::waitKey;
+using std::ifstream;
+using std::ofstream;
 
 static string WIN_NAME = "CMT";
+
 
 int main(int argc, char **argv)
 {
     //Set up logging
-    FILELog::ReportingLevel() = logDEBUG;
+    FILELog::ReportingLevel() = logINFO;
     Output2FILE::Stream() = stdout; //Log to stdout
+
+    //Parse args
+    int challenge_flag = 0;
+
+    struct option longopts[] =
+    {
+        {"challenge", no_argument, &challenge_flag, 1},
+        {0, 0, 0, 0}
+    };
+
+    int index = 0;
+    int c;
+    while((c = getopt_long(argc, argv, "", longopts, &index)) != -1)
+    {
+    }
+
+    //Challenge mode
+    if (challenge_flag)
+    {
+        //Read list of images
+        ifstream im_file("images.txt");
+        vector<string> files;
+        string line;
+        while(im_file >> line)
+        {
+            files.push_back(line);
+        }
+
+        //Read region
+        float x,y,w,h;
+        char a;
+        ifstream region_file("region.txt");
+        region_file >> x >> a >> y >> a >> w >> a >> h;
+        Rect rect(x,y,w,h);
+
+        //Read first image
+        Mat im0 = imread(files[0]);
+        Mat im0_gray;
+        cvtColor(im0, im0_gray, CV_BGR2GRAY);
+
+        //Initialize cmt
+        CMT cmt;
+        cmt.initialize(im0_gray, rect);
+
+        //Write init region to output file
+        ofstream output_file("output.txt");
+        output_file << rect.x << ',' << rect.y << ',' << rect.width << ',' << rect.height << std::endl;
+
+        //Process images, write output to file
+        for (size_t i = 1; i < files.size(); i++)
+        {
+            FILE_LOG(logINFO) << "Processing frame " << i << "/" << files.size();
+            Mat im = imread(files[i]);
+            Mat im_gray;
+            cvtColor(im, im_gray, CV_BGR2GRAY);
+            cmt.processFrame(im_gray);
+            rect = cmt.bb_rot.boundingRect();
+            output_file << rect.x << ',' << rect.y << ',' << rect.width << ',' << rect.height << std::endl;
+        }
+
+        output_file.close();
+
+        return 0;
+    }
+
+    //Normal mode
 
     //Create window
     namedWindow(WIN_NAME);
@@ -52,12 +131,12 @@ int main(int argc, char **argv)
     waitKey(10);
 
     //Convert im0 to grayscale
-    Mat im_gray0;
-    cvtColor(im0, im_gray0, CV_BGR2GRAY);
+    Mat im0_gray;
+    cvtColor(im0, im0_gray, CV_BGR2GRAY);
 
     //Initialize CMT
     CMT cmt;
-    cmt.initialize(im_gray0, rect);
+    cmt.initialize(im0_gray, rect);
 
     int frame = 0;
 
