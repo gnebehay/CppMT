@@ -120,7 +120,8 @@ void Matcher::matchLocal(const vector<KeyPoint> & keypoints, const Mat descripto
             vector<DMatch> m = matches[j];
 
             float distance1 = m[0].distance / desc_length;
-            float distance2 = m[1].distance / desc_length;
+            //TODO: Check the following line for correctness
+            float distance2 = m.size() > 1 ? m[1].distance / desc_length : 1;
 
             int matched_class = classes[indices_potential[m[0].queryIdx]];
 
