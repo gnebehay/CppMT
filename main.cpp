@@ -24,27 +24,49 @@ using std::ofstream;
 
 static string WIN_NAME = "CMT";
 
-
 int main(int argc, char **argv)
 {
-    //Set up logging
-    FILELog::ReportingLevel() = logINFO;
-    Output2FILE::Stream() = stdout; //Log to stdout
+    //Create a CMT object
+    CMT cmt;
 
     //Parse args
     int challenge_flag = 0;
+    int verbose_flag = 0;
+
+    const int detector_cmd = 1000;
+    const int descriptor_cmd = 1001;
 
     struct option longopts[] =
     {
         {"challenge", no_argument, &challenge_flag, 1},
+        {"verbose", no_argument, &verbose_flag, 1},
+        {"detector", required_argument, 0, detector_cmd},
+        {"descriptor", required_argument, 0, descriptor_cmd},
         {0, 0, 0, 0}
     };
 
     int index = 0;
     int c;
-    while((c = getopt_long(argc, argv, "", longopts, &index)) != -1)
+    while((c = getopt_long(argc, argv, "v", longopts, &index)) != -1)
     {
+        switch (c)
+        {
+            case 'v':
+                verbose_flag = true;
+                break;
+            case detector_cmd:
+                cmt.str_detector = optarg;
+                break;
+            case descriptor_cmd:
+                cmt.str_descriptor = optarg;
+                break;
+        }
+
     }
+
+    //Set up logging
+    FILELog::ReportingLevel() = verbose_flag ? logDEBUG : logINFO;
+    Output2FILE::Stream() = stdout; //Log to stdout
 
     //Challenge mode
     if (challenge_flag)
@@ -71,7 +93,6 @@ int main(int argc, char **argv)
         cvtColor(im0, im0_gray, CV_BGR2GRAY);
 
         //Initialize cmt
-        CMT cmt;
         cmt.initialize(im0_gray, rect);
 
         //Write init region to output file
@@ -135,7 +156,6 @@ int main(int argc, char **argv)
     cvtColor(im0, im0_gray, CV_BGR2GRAY);
 
     //Initialize CMT
-    CMT cmt;
     cmt.initialize(im0_gray, rect);
 
     int frame = 0;
