@@ -67,7 +67,7 @@ static void onMouse(int event, int x, int y, int flags, void *param)
     imshow(win_name_, im_draw);
 }
 
-void getRect(const Mat im, const string win_name, Rect & rect)
+Rect getRect(const Mat im, const string win_name)
 {
 
     win_name_ = win_name;
@@ -89,6 +89,6 @@ void getRect(const Mat im, const string win_name, Rect & rect)
 
     im_select.release(); //im_select is in global scope, so we call release manually
 
-    rect = Rect(tl,br);
+    return Rect(tl,br);
 }
 
