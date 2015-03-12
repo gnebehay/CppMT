@@ -126,7 +126,8 @@ void Consensus::findConsensus(const vector<Point2f> & points, const vector<int> 
     }
 
     t_index N = points.size();
-    float D[N*(N-1)/2];
+
+    float * D = new float[N*(N-1)/2]; //This is a lot of memory, so we put it on the heap
     cluster_result Z(N-1);
 
     //Compute pairwise distances between votes
@@ -207,6 +208,8 @@ void Consensus::findConsensus(const vector<Point2f> & points, const vector<int> 
 
     center.x /= points_inlier.size();
     center.y /= points_inlier.size();
+
+    delete[] D;
 
     FILE_LOG(logDEBUG) << "Consensus::findConsensus() return";
 }
