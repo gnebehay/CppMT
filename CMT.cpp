@@ -70,6 +70,8 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
         points_fg.push_back(keypoints_fg[i].pt);
     }
 
+    FILE_LOG(logDEBUG) << points_fg.size() << " foreground points.";
+
     for (size_t i = 0; i < keypoints_bg.size(); i++)
     {
         points_bg.push_back(keypoints_bg[i].pt);
@@ -159,6 +161,7 @@ void CMT::processFrame(Mat im_gray) {
             center, points_inlier, classes_inlier);
 
     FILE_LOG(logDEBUG) << points_inlier.size() << " inlier points.";
+    FILE_LOG(logDEBUG) << "center " << center;
 
     //Match keypoints locally
     vector<Point2f> points_matched_local;
