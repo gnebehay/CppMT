@@ -24,6 +24,27 @@ using std::ofstream;
 
 static string WIN_NAME = "CMT";
 
+int display(Mat im, CMT & cmt)
+{
+    //Visualize the output
+    //It is ok to draw on im itself, as CMT only uses the grayscale image
+    for(size_t i = 0; i < cmt.points_active.size(); i++)
+    {
+        circle(im, cmt.points_active[i], 2, Scalar(255,0,0));
+    }
+
+    Point2f vertices[4];
+    cmt.bb_rot.points(vertices);
+    for (int i = 0; i < 4; i++)
+    {
+        line(im, vertices[i], vertices[(i+1)%4], Scalar(255,0,0));
+    }
+
+    imshow(WIN_NAME, im);
+
+    return waitKey(5);
+}
+
 int main(int argc, char **argv)
 {
     //Create a CMT object
@@ -173,23 +194,8 @@ int main(int argc, char **argv)
         //Let CMT process the frame
         cmt.processFrame(im_gray);
 
-        //Visualize the output
-        //It is ok to draw on im itself, as CMT only uses the grayscale image
-        for(size_t i = 0; i < cmt.points_active.size(); i++)
-        {
-            circle(im, cmt.points_active[i], 2, Scalar(255,0,0));
-        }
+        char key = display(im, cmt);
 
-        Point2f vertices[4];
-        cmt.bb_rot.points(vertices);
-        for (int i = 0; i < 4; i++)
-        {
-            line(im, vertices[i], vertices[(i+1)%4], Scalar(255,0,0));
-        }
-
-        imshow(WIN_NAME, im);
-
-        char key = waitKey(5);
         if(key == 'q') break;
 
         //TODO: Provide meaningful output
