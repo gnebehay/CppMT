@@ -4,7 +4,9 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <iostream>
 #include <fstream>
+#include <cstdio>
 
 #ifdef __GNUC__
 #include <getopt.h>
@@ -12,15 +14,17 @@
 #include "getopt/getopt.h"
 #endif
 
-
 using cmt::CMT;
 using cv::imread;
 using cv::namedWindow;
 using cv::Scalar;
 using cv::VideoCapture;
 using cv::waitKey;
+using std::cerr;
 using std::ifstream;
 using std::ofstream;
+using std::cout;
+using std::endl;
 
 static string WIN_NAME = "CMT";
 
@@ -50,17 +54,25 @@ int main(int argc, char **argv)
     //Create a CMT object
     CMT cmt;
 
+    //Initialization bounding box
+    Rect rect;
+
     //Parse args
     int challenge_flag = 0;
     int verbose_flag = 0;
+    int bbox_flag = 0;
 
     const int detector_cmd = 1000;
     const int descriptor_cmd = 1001;
+    const int bbox_cmd = 1002;
 
     struct option longopts[] =
     {
+        //No-argument options
         {"challenge", no_argument, &challenge_flag, 1},
         {"verbose", no_argument, &verbose_flag, 1},
+        //Argument options
+        {"bbox", required_argument, 0, bbox_cmd},
         {"detector", required_argument, 0, detector_cmd},
         {"descriptor", required_argument, 0, descriptor_cmd},
         {0, 0, 0, 0}
@@ -75,12 +87,30 @@ int main(int argc, char **argv)
             case 'v':
                 verbose_flag = true;
                 break;
+            case bbox_cmd:
+                {
+                    //TODO: The following also accepts strings of the form %f,%f,%f,%fxyz...
+                    string bbox_format = "%f,%f,%f,%f";
+                    float x,y,w,h;
+                    int ret = sscanf(optarg, bbox_format.c_str(), &x, &y, &w, &h);
+                    if (ret != 4)
+                    {
+                        cerr << "bounding box must be given in format " << bbox_format << endl;
+                        return 1;
+                    }
+
+                    bbox_flag = 1;
+                    rect = Rect(x,y,w,h);
+                }
+                break;
             case detector_cmd:
                 cmt.str_detector = optarg;
                 break;
             case descriptor_cmd:
                 cmt.str_descriptor = optarg;
                 break;
+            case '?':
+                return 1;
         }
 
     }
@@ -106,7 +136,7 @@ int main(int argc, char **argv)
         char a;
         ifstream region_file("region.txt");
         region_file >> x >> a >> y >> a >> w >> a >> h;
-        Rect rect(x,y,w,h);
+        rect = Rect(x,y,w,h);
 
         //Read first image
         Mat im0 = imread(files[0]);
