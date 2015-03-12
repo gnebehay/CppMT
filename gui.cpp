@@ -49,19 +49,20 @@ static void onMouse(int event, int x, int y, int flags, void *param)
         tl_set = true;
     }
 
-    else if(event == CV_EVENT_MOUSEMOVE && tl_set)
-    {
-        rectangle(im_draw, tl, Point(x, y), Scalar(255,0,0));//, 1, 8, 0);
-    }
-
     else if(event == CV_EVENT_LBUTTONUP && tl_set)
     {
         br = Point(x,y);
         br_set = true;
+        screenLog(im_draw, "Initializing...");
     }
 
     if (!tl_set) screenLog(im_draw, "Click on the top left corner of the object");
-    else if (!br_set) screenLog(im_draw, "Click on the bottom right corner of the object");
+    else
+    {
+        rectangle(im_draw, tl, Point(x, y), Scalar(255,0,0));
+
+        if (!br_set) screenLog(im_draw, "Click on the bottom right corner of the object");
+    }
 
     imshow(win_name_, im_draw);
 }

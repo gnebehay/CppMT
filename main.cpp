@@ -147,9 +147,9 @@ int main(int argc, char **argv)
     Rect rect;
     getRect(im0, WIN_NAME, rect);
 
-    screenLog(im_draw, "Initializing..."); //Re-use im_draw for logging
-    imshow(WIN_NAME, im_draw);
-    waitKey(10);
+
+    FILE_LOG(logINFO) << "Using " << rect.x << "," << rect.y << "," << rect.width << "," << rect.height
+        << " as initial bounding box.";
 
     //Convert im0 to grayscale
     Mat im0_gray;
