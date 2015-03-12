@@ -61,6 +61,7 @@ int main(int argc, char **argv)
     int challenge_flag = 0;
     int verbose_flag = 0;
     int bbox_flag = 0;
+    string input_path;
 
     const int detector_cmd = 1000;
     const int descriptor_cmd = 1001;
@@ -115,6 +116,18 @@ int main(int argc, char **argv)
 
     }
 
+    //One argument remains
+    if (optind == argc - 1)
+    {
+        input_path = argv[optind];
+    }
+
+    else if (optind < argc - 1)
+    {
+        cerr << "A maximum of one argument is allowed and all options must precede this argument." << endl;
+        return 1;
+    }
+
     //Set up logging
     FILELog::ReportingLevel() = verbose_flag ? logDEBUG : logINFO;
     Output2FILE::Stream() = stdout; //Log to stdout
@@ -158,6 +171,10 @@ int main(int argc, char **argv)
             Mat im_gray;
             cvtColor(im, im_gray, CV_BGR2GRAY);
             cmt.processFrame(im_gray);
+            if (verbose_flag)
+            {
+                display(im, cmt);
+            }
             rect = cmt.bb_rot.boundingRect();
             output_file << rect.x << ',' << rect.y << ',' << rect.width << ',' << rect.height << std::endl;
         }
@@ -172,31 +189,54 @@ int main(int argc, char **argv)
     //Create window
     namedWindow(WIN_NAME);
 
-    //Open default camera device
-    VideoCapture cap(0);
+    VideoCapture cap;
+
+    bool show_preview = true;
+
+    //If no input was specified
+    if (input_path.length() == 0)
+    {
+        cap.open(0); //Open default camera device
+    }
+
+    //Else open the video specified by input_path
+    else
+    {
+        cap.open(input_path);
+        show_preview = false;
+    }
+
+    //If it doesn't work, stop
     if(!cap.isOpened())
+    {
+        cerr << "Unable to open video capture." << endl;
         return -1;
+    }
 
     //Show preview until key is pressed
-    Mat im0;
-    Mat im_draw;
-    while(1)
+    while (show_preview)
     {
-        cap >> im0;
-        im0.copyTo(im_draw);
+        Mat preview;
+        cap >> preview;
 
-        screenLog(im_draw, "Press a key to start selecting an object.");
-        imshow(WIN_NAME, im_draw);
+        screenLog(preview, "Press a key to start selecting an object.");
+        imshow(WIN_NAME, preview);
 
         char k = waitKey(10);
         if (k != -1) {
-            break;
+            show_preview = false;
         }
     }
 
-    //Get bounding box from user
-    Rect rect;
-    getRect(im0, WIN_NAME, rect);
+    //Get initial image
+    Mat im0;
+    cap >> im0;
+
+    //If no bounding was specified, get it from user
+    if (!bbox_flag)
+    {
+        rect = getRect(im0, WIN_NAME);
+    }
 
 
     FILE_LOG(logINFO) << "Using " << rect.x << "," << rect.y << "," << rect.width << "," << rect.height
@@ -211,7 +251,8 @@ int main(int argc, char **argv)
 
     int frame = 0;
 
-    while(1)
+    //Main loop
+    while (true)
     {
         frame++;
 
