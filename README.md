@@ -10,20 +10,37 @@ CppMT is freely available under the [Simplified BSD license][1],
 meaning that you can basically do with the code whatever you want.
 If you use our algorithm in scientific work, please cite our publication
 ```
-@inproceedings{Nebehay2014WACV,
+@inproceedings{Nebehay2015CVPR,
     author = {Nebehay, Georg and Pflugfelder, Roman},
+    title = {Consensus-based Matching and Tracking of Keypoints for Object Tracking},
     booktitle = {Computer Vision and Pattern Recognition},
     month = mar,
-    publisher = {IEEE},
-    title = {Consensus-based Matching and Tracking of Keypoints for Object Tracking},
-    year = {2014}
+    year = {2015},
+    publisher = {IEEE}
 }
 ```
 
 # Dependencies
 * OpenCV (>= 2.4.8, < 3)
 
-[1]: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
+# Building
+CppMT uses cmake for building.
+In its most simple form, calling
+```
+cmake .
+```
+from the source directory should setup everything that is necessary.
+On Linux, you will probably call
+```
+make
+```
+afterwards, while on Windows you will open the project file in Visual Studio and start the build there.
+
+Make sure the code is compiled in release mode, which can be accomplished under Linux by
+```
+cmake . -DCMAKE_BUILD_TYPE=RELEASE
+```
+Also cmake-gui might be helpful in this respect.
 
 # Usage
 ```
@@ -55,3 +72,5 @@ It is also possible to specify the initial bounding box on the command line.
 ```
 python run.py --bbox=123,85,60,140 /home/cmt/test.avi
 ```
+
+[1]: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
