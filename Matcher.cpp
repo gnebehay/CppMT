@@ -126,7 +126,7 @@ void Matcher::matchLocal(const vector<KeyPoint> & keypoints, const Mat descripto
         if (distance1 > thr_dist) continue;
         if (distance1/distance2 > thr_ratio) continue;
 
-        int matched_class = classes[indices_potential[m[0].queryIdx]];
+        int matched_class = classes[indices_potential[m[0].trainIdx]];
 
         points_matched.push_back(keypoints[i].pt);
         classes_matched.push_back(matched_class);
