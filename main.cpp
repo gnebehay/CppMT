@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 
     else if (optind < argc - 1)
     {
-        cerr << "A maximum of one argument is allowed and all options must precede this argument." << endl;
+        cerr << "Only one argument is allowed." << endl;
         return 1;
     }
 
