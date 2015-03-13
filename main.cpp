@@ -59,6 +59,7 @@ int main(int argc, char **argv)
 
     //Parse args
     int challenge_flag = 0;
+    int loop_flag = 0;
     int verbose_flag = 0;
     int bbox_flag = 0;
     string input_path;
@@ -71,6 +72,7 @@ int main(int argc, char **argv)
     {
         //No-argument options
         {"challenge", no_argument, &challenge_flag, 1},
+        {"loop", no_argument, &loop_flag, 1},
         {"verbose", no_argument, &verbose_flag, 1},
         //Argument options
         {"bbox", required_argument, 0, bbox_cmd},
@@ -257,7 +259,10 @@ int main(int argc, char **argv)
         frame++;
 
         Mat im;
-        cap >> im;
+
+        //If loop flag is set, reuse initial image (for debugging purposes)
+        if (loop_flag) im0.copyTo(im);
+        else cap >> im; //Else use next image in stream
 
         Mat im_gray;
         cvtColor(im, im_gray, CV_BGR2GRAY);
