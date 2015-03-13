@@ -49,9 +49,9 @@ void Consensus::estimateScaleRotation(const vector<Point2f> & points, const vect
 
     //Compute pairwise changes in scale/rotation
     vector<float> changes_scale;
-    changes_scale.reserve(points.size()*points.size());
+    if (estimate_scale) changes_scale.reserve(points.size()*points.size());
     vector<float> changes_angles;
-    changes_angles.reserve(points.size()*points.size());
+    if (estimate_rotation) changes_angles.reserve(points.size()*points.size());
 
     for (size_t i = 0; i < points.size(); i++)
     {
@@ -61,42 +61,39 @@ void Consensus::estimateScaleRotation(const vector<Point2f> & points, const vect
             {
                 Point2f v = points[i] - points[j];
 
-                float distance = norm(v);
-                float distance_original = distances_pairwise.at<float>(classes[i],classes[j]);
-                float change_scale = distance / distance_original;
-                changes_scale.push_back(change_scale);
-
-                float angle = atan2(v.y,v.x);
-                float angle_original = angles_pairwise.at<float>(classes[i],classes[j]);
-                float change_angle = angle - angle_original;
-
-                //Fix long way angles
-                if (fabs(change_angle) > M_PI) {
-                    change_angle = sgn(change_angle) * 2 * M_PI + change_angle;
+                if (estimate_scale)
+                {
+                    float distance = norm(v);
+                    float distance_original = distances_pairwise.at<float>(classes[i],classes[j]);
+                    float change_scale = distance / distance_original;
+                    changes_scale.push_back(change_scale);
                 }
 
-                changes_angles.push_back(change_angle);
+                if (estimate_rotation)
+                {
+                    float angle = atan2(v.y,v.x);
+                    float angle_original = angles_pairwise.at<float>(classes[i],classes[j]);
+                    float change_angle = angle - angle_original;
+
+                    //Fix long way angles
+                    if (fabs(change_angle) > M_PI) {
+                        change_angle = sgn(change_angle) * 2 * M_PI + change_angle;
+                    }
+
+                    changes_angles.push_back(change_angle);
+                }
             }
 
         }
 
     }
 
-    //TODO: Check the implications of these lines
-    //Is it reasonable to guess that there is no scale and rotation when there is no evidence?
-    if (changes_scale.size() < 2)
-    {
-        scale = 1;
-        rotation = 0;
-
-        FILE_LOG(logDEBUG) << "Consensus::estimateScaleRotation() return";
-
-        return;
-    }
-
     //Do not use changes_scale, changes_angle after this point as their order is changed by median()
-    scale = median(changes_scale);
-    rotation = median(changes_angles);
+    if (changes_scale.size() < 2) scale = 1;
+    else scale = median(changes_scale);
+
+    if (changes_angles.size() < 2) rotation = 0;
+    else rotation = median(changes_angles);
 
     FILE_LOG(logDEBUG) << "Consensus::estimateScaleRotation() return";
 }

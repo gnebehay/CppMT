@@ -26,6 +26,11 @@ public:
     void initialize(const Mat im_gray, const Rect rect);
     void processFrame(const Mat im_gray);
 
+    Fusion fusion;
+    Matcher matcher;
+    Tracker tracker;
+    Consensus consensus;
+
     string str_detector;
     string str_descriptor;
 
@@ -33,11 +38,6 @@ public:
     RotatedRect bb_rot;
 
 private:
-    Fusion fusion;
-    Matcher matcher;
-    Tracker tracker;
-    Consensus consensus;
-
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;
 

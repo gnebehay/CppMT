@@ -67,6 +67,8 @@ int main(int argc, char **argv)
     const int detector_cmd = 1000;
     const int descriptor_cmd = 1001;
     const int bbox_cmd = 1002;
+    const int no_scale_cmd = 1003;
+    const int with_rotation_cmd = 1004;
 
     struct option longopts[] =
     {
@@ -78,6 +80,8 @@ int main(int argc, char **argv)
         {"bbox", required_argument, 0, bbox_cmd},
         {"detector", required_argument, 0, detector_cmd},
         {"descriptor", required_argument, 0, descriptor_cmd},
+        {"no-scale", no_argument, 0, no_scale_cmd},
+        {"with-rotation", no_argument, 0, with_rotation_cmd},
         {0, 0, 0, 0}
     };
 
@@ -111,6 +115,12 @@ int main(int argc, char **argv)
                 break;
             case descriptor_cmd:
                 cmt.str_descriptor = optarg;
+                break;
+            case no_scale_cmd:
+                cmt.consensus.estimate_scale = false;
+                break;
+            case with_rotation_cmd:
+                cmt.consensus.estimate_rotation = true;
                 break;
             case '?':
                 return 1;
