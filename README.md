@@ -60,17 +60,17 @@ top left bounding box corner and left click again to select the bottom right cor
 ## Examples
 When using a webcam, no arguments are necessary:
 ```
-./cmt
+cmt
 ```
 
 When using a video, the path to the file has to be given as an input parameter:
 ```
-./cmt /home/cmt/test.avi
+cmt /home/cmt/test.avi
 ```
 
 It is also possible to specify the initial bounding box on the command line.
 ```
-python run.py --bbox=123,85,60,140 /home/cmt/test.avi
+cmt --bbox=123,85,60,140 /home/cmt/test.avi
 ```
 
 [1]: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
