@@ -151,7 +151,7 @@ int main(int argc, char **argv)
         ifstream im_file("images.txt");
         vector<string> files;
         string line;
-        while(im_file >> line)
+        while(getline(im_file, line ))
         {
             files.push_back(line);
         }
