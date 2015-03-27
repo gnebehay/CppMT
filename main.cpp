@@ -21,12 +21,32 @@ using cv::Scalar;
 using cv::VideoCapture;
 using cv::waitKey;
 using std::cerr;
+using std::istream;
 using std::ifstream;
+using std::stringstream;
 using std::ofstream;
 using std::cout;
+using std::min_element;
+using std::max_element;
 using std::endl;
+using ::atof;
 
 static string WIN_NAME = "CMT";
+
+vector<float> getNextLineAndSplitIntoFloats(istream& str)
+{
+    vector<float>   result;
+    string                line;
+    getline(str,line);
+
+    stringstream          lineStream(line);
+    string                cell;
+    while(getline(lineStream,cell,','))
+    {
+        result.push_back(atof(cell.c_str()));
+    }
+    return result;
+}
 
 int display(Mat im, CMT & cmt)
 {
@@ -157,11 +177,38 @@ int main(int argc, char **argv)
         }
 
         //Read region
-        float x,y,w,h;
-        char a;
         ifstream region_file("region.txt");
-        region_file >> x >> a >> y >> a >> w >> a >> h;
-        rect = Rect(x,y,w,h);
+        vector<float> coords = getNextLineAndSplitIntoFloats(region_file);
+
+        if (coords.size() == 4) {
+            rect = Rect(coords[0], coords[1], coords[2], coords[3]);
+        }
+
+        else if (coords.size() == 8)
+        {
+            //Split into x and y coordinates
+            vector<float> xcoords;
+            vector<float> ycoords;
+
+            for (size_t i = 0; i < coords.size(); i++)
+            {
+                if (i % 2 == 0) xcoords.push_back(coords[i]);
+                else ycoords.push_back(coords[i]);
+            }
+
+            float xmin = *min_element(xcoords.begin(), xcoords.end());
+            float xmax = *max_element(xcoords.begin(), xcoords.end());
+            float ymin = *min_element(ycoords.begin(), ycoords.end());
+            float ymax = *max_element(ycoords.begin(), ycoords.end());
+
+            rect = Rect(xmin, ymin, xmax-xmin, ymax-ymin);
+            cout << "Found bounding box" << xmin << " " << ymin << " " <<  xmax-xmin << " " << ymax-ymin << endl;
+        }
+
+        else {
+            cerr << "Invalid Bounding box format" << endl;
+            return 0;
+        }
 
         //Read first image
         Mat im0 = imread(files[0]);
