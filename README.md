@@ -12,11 +12,11 @@ If you use our algorithm in scientific work, please cite our publication
 ```
 @inproceedings{Nebehay2015CVPR,
     author = {Nebehay, Georg and Pflugfelder, Roman},
-    title = {Consensus-based Matching and Tracking of Keypoints for Object Tracking},
     booktitle = {Computer Vision and Pattern Recognition},
-    month = mar,
-    year = {2015},
-    publisher = {IEEE}
+    month = jun,
+    publisher = {IEEE},
+    title = {Clustering of {Static-Adaptive} Correspondences for Deformable Object Tracking},
+    year = {2015}
 }
 ```
 
