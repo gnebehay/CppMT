@@ -15,13 +15,12 @@ add_library(cmtlib common.cpp CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp
 target_link_libraries(cmtlib ${OpenCV_LIBS})
 set_target_properties(cmtlib PROPERTIES OUTPUT_NAME "cmt")
 
-add_executable(cmtgui gui.cpp main.cpp)
-target_link_libraries(cmtgui cmtlib ${OpenCV_LIBS})
-set_target_properties(cmtgui PROPERTIES OUTPUT_NAME "cmt")
+add_executable(cmt gui.cpp main.cpp)
+target_link_libraries(cmt cmtlib)
 
 if(BUILD_WRAPPER)
     add_library(cmtclib cwrapper.cpp)
-    target_link_libraries(cmtclib cmtlib ${OpenCV_LIBS})
+    target_link_libraries(cmtclib cmtlib)
     set_target_properties(cmtclib PROPERTIES OUTPUT_NAME "ccmt")
 
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pycmt.py
@@ -33,12 +32,11 @@ if(BUILD_TRAX_CLIENT)
 
     include_directories(${TRAX_DIR}/include)
 
-    add_executable (trax_client cmtgui common.cpp gui.cpp trax.cpp
-        CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
-        fastcluster/fastcluster.cpp)
+    add_executable (trax_client trax.cpp)
+    target_link_libraries(trax_client cmtlib)
 
     find_library(TRAX_LIBRARY NAMES trax HINTS "${TRAX_DIR}/lib")
 
-    target_link_libraries(trax_client ${OpenCV_LIBS} ${TRAX_LIBRARY})
+    target_link_libraries(trax_client ${TRAX_LIBRARY})
 
 endif()
