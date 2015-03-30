@@ -14,7 +14,7 @@ void delCMT(c_CMT cmt);
 void cmt_initialize(c_CMT cmt, unsigned char* im_data, size_t rows, size_t cols,
     int x, int y, int w, int h);
 void processFrame(c_CMT cmt, unsigned char* im_data, size_t rows, size_t cols,
-        int * x, int * y, int * w, int * h);
+    int * x, int * y, int * w, int * h);
 
 #ifdef __cplusplus
 }
