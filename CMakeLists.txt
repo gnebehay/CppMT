@@ -6,6 +6,10 @@ option(BUILD_TRAX_CLIENT "Build the trax client." OFF)
 
 find_package(OpenCV REQUIRED)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
+
 add_definitions ("-Wall")
 
 add_executable (cmt common.cpp gui.cpp main.cpp
