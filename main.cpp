@@ -297,7 +297,6 @@ int main(int argc, char **argv)
         rect = getRect(im0, WIN_NAME);
     }
 
-
     FILE_LOG(logINFO) << "Using " << rect.x << "," << rect.y << "," << rect.width << "," << rect.height
         << " as initial bounding box.";
 
