@@ -36,12 +36,6 @@ make
 ```
 afterwards, while on Windows you will open the project file in Visual Studio and start the build there.
 
-Make sure the code is compiled in release mode, which can be accomplished under Linux by
-```
-cmake . -DCMAKE_BUILD_TYPE=RELEASE
-```
-Also cmake-gui might be helpful in this respect.
-
 # Usage
 ```
 usage: ./cmt [--challenge] [--no-scale] [--no-rotation] [--bbox BBOX] [inputpath]
