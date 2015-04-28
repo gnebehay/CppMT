@@ -17,7 +17,12 @@ void Matcher::initialize(const vector<Point2f> & pts_fg_norm, const Mat desc_fg,
     this->num_bg_points = desc_bg.rows;
 
     //Form database by stacking background and foreground features
-    vconcat(desc_bg, desc_fg, database);
+    if (desc_bg.rows > 0 && desc_fg.rows > 0)
+        vconcat(desc_bg, desc_fg, database);
+    else if (desc_bg.rows > 0)
+        database = desc_bg;
+    else
+        database = desc_fg;
 
     //Extract descriptor length from features
     desc_length = database.cols*8;
