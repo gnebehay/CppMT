@@ -1,0 +1,18 @@
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+install:
+  - sudo add-apt-repository -y ppa:gijzelaar/opencv2.4
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq libopencv-dev
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - make
