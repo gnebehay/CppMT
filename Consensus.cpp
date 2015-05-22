@@ -151,7 +151,7 @@ void Consensus::findConsensus(const vector<Point2f> & points, const vector<int> 
     std::stable_sort(Z[0], Z[N-1]);
 
     //S are cluster sizes
-    int S[2*N-1];
+    int * S = new int[2*N-1];
     //TODO: Why does this loop go to 2*N-1? Shouldn't it be simply N? Everything > N gets overwritten later
     for(int i = 0; i < 2*N-1; i++)
     {
@@ -177,7 +177,7 @@ void Consensus::findConsensus(const vector<Point2f> & points, const vector<int> 
     }
 
     //Get cluster labels
-    int T[N];
+    int * T = new int[N];
     for (t_index i = 0; i < N; i++)
     {
         T[i] = nodes.Find(i);
@@ -208,6 +208,8 @@ void Consensus::findConsensus(const vector<Point2f> & points, const vector<int> 
     center.y /= points_inlier.size();
 
     delete[] D;
+	delete[] S;
+	delete[] T;
 
     FILE_LOG(logDEBUG) << "Consensus::findConsensus() return";
 }
