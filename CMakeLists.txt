@@ -12,9 +12,16 @@ endif()
 
 add_definitions ("-Wall")
 
+if(WIN32)
+add_executable (cmt common.cpp gui.cpp main.cpp
+    CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
+    fastcluster/fastcluster.cpp getopt/getopt.cpp
+    )
+else()
 add_executable (cmt common.cpp gui.cpp main.cpp
     CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
     fastcluster/fastcluster.cpp)
+endif()
 
 target_link_libraries(cmt ${OpenCV_LIBS})
 
