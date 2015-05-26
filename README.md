@@ -36,9 +36,23 @@ make
 ```
 afterwards, while on Windows you will open the project file in Visual Studio and start the build there.
 
+## Note for Windows users
+These steps are necessary to get CppMT running on Windows:
+* Download this repository.
+* Download and install
+[Visual Studio](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx).
+* Download and install the latest [OpenCV 2.4.x release](http://opencv.org/downloads.html).
+* Download and install the latest [CMake release](http://www.cmake.org/download/).
+* Run CMake and configure the project [like so](http://www.gnebehay.com/cmt/cmake.png).
+The only thing you actually have to specify yourself is the location of your OpenCV installation.
+* Add the OpenCV DLLs to the PATH environment variable [like so](http://www.gnebehay.com/cmt/path.png).
+The vcXX part depends on the edition of visual studio that you are using.
+For example, vc12 is to be used for Visual Studio 2013.
+* Open the Visual Studio solution file (CMT.sln), hit F7 to build and F5 to Run/Debug.
+
 # Usage
 ```
-usage: ./cmt [--challenge] [--no-scale] [--no-rotation] [--bbox BBOX] [inputpath]
+usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [inputpath]
 ```
 ## Optional arguments
 * `inputpath` The input path.
