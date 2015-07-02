@@ -302,7 +302,11 @@ int main(int argc, char **argv)
 
     //Convert im0 to grayscale
     Mat im0_gray;
-    cvtColor(im0, im0_gray, CV_BGR2GRAY);
+    if (im0.channels() > 1) {
+        cvtColor(im0, im0_gray, CV_BGR2GRAY);
+    } else {
+        im0_gray = im0;
+    }
 
     //Initialize CMT
     cmt.initialize(im0_gray, rect);
@@ -321,7 +325,11 @@ int main(int argc, char **argv)
         else cap >> im; //Else use next image in stream
 
         Mat im_gray;
-        cvtColor(im, im_gray, CV_BGR2GRAY);
+        if (im.channels() > 1) {
+            cvtColor(im, im_gray, CV_BGR2GRAY);
+        } else {
+            im_gray = im;
+        }
 
         //Let CMT process the frame
         cmt.processFrame(im_gray);
