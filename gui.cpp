@@ -1,6 +1,9 @@
 #include "gui.h"
 
 #include <opencv2/highgui/highgui.hpp>
+#if CV_MAJOR_VERSION > 2
+# include <opencv2/imgproc.hpp>
+#endif
 
 using cv::setMouseCallback;
 using cv::Point;

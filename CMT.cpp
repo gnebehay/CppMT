@@ -19,8 +19,13 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
     Point2f center = Point2f(rect.x + rect.width/2.0, rect.y + rect.height/2.0);
 
     //Initialize detector and descriptor
+#if CV_MAJOR_VERSION > 2
+    detector = cv::FastFeatureDetector::create();
+    descriptor = cv::BRISK::create();
+#else
     detector = FeatureDetector::create(str_detector);
     descriptor = DescriptorExtractor::create(str_descriptor);
+#endif
 
     //Get initial keypoints in whole image and compute their descriptors
     vector<KeyPoint> keypoints;
