@@ -2,6 +2,7 @@
 
 #define COMMON_H
 
+#include <limits>
 #include <string>
 #include <vector>
 
