@@ -12,6 +12,8 @@ endif()
 
 add_definitions ("-Wall")
 
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 if(WIN32)
 add_executable (cmt common.cpp gui.cpp main.cpp
     CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
