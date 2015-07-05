@@ -21,7 +21,7 @@ If you use our algorithm in scientific work, please cite our publication
 ```
 
 # Dependencies
-* OpenCV (>= 2.4.8, < 3)
+* OpenCV (>= 2.4.8), OpenCV 3 is supported
 
 # Building
 CppMT uses cmake for building.
@@ -70,15 +70,17 @@ When using a webcam, no arguments are necessary:
 ```
 cmt
 ```
-
 When using a video, the path to the file has to be given as an input parameter:
 ```
-cmt /home/cmt/test.avi
+cmt test.avi
 ```
+If your input consists of numbered image files (e.g. im_0001.png, im_0002.png, ...), you can use printf syntax:
+```
+cmt im_%04d.png
 
-It is also possible to specify the initial bounding box on the command line.
+It is also possible to specify the initial bounding box on the command line:
 ```
-cmt --bbox=123,85,60,140 /home/cmt/test.avi
+cmt --bbox=123,85,60,140 test.avi
 ```
 
 [1]: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
