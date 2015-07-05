@@ -324,6 +324,8 @@ int main(int argc, char **argv)
         if (loop_flag) im0.copyTo(im);
         else cap >> im; //Else use next image in stream
 
+        if (im.empty()) break; //Exit at end of video stream
+
         Mat im_gray;
         if (im.channels() > 1) {
             cvtColor(im, im_gray, CV_BGR2GRAY);
