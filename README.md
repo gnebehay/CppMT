@@ -52,7 +52,7 @@ For example, vc12 is to be used for Visual Studio 2013.
 
 # Usage
 ```
-usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [inputpath]
+usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [--skip N] [inputpath]
 ```
 ## Optional arguments
 * `inputpath` The input path.
@@ -60,6 +60,7 @@ usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [inputpa
 * `--no-scale` Disable scale estimation
 * `--with-rotation` Enable rotation estimation
 * `--bbox BBOX` Specify initial bounding box. Format: x,y,w,h
+* `--skip N` Skip N frames of the video input
 
 ## Object Selection
 Press any key to stop the preview stream. Left click to select the
