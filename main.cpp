@@ -82,6 +82,7 @@ int main(int argc, char **argv)
     int loop_flag = 0;
     int verbose_flag = 0;
     int bbox_flag = 0;
+    int skip_frames = 0;
     string input_path;
 
     const int detector_cmd = 1000;
@@ -89,6 +90,7 @@ int main(int argc, char **argv)
     const int bbox_cmd = 1002;
     const int no_scale_cmd = 1003;
     const int with_rotation_cmd = 1004;
+    const int skip_cmd = 1005;
 
     struct option longopts[] =
     {
@@ -102,6 +104,7 @@ int main(int argc, char **argv)
         {"bbox", required_argument, 0, bbox_cmd},
         {"detector", required_argument, 0, detector_cmd},
         {"descriptor", required_argument, 0, descriptor_cmd},
+        {"skip", required_argument, 0, skip_cmd},
         {0, 0, 0, 0}
     };
 
@@ -135,6 +138,15 @@ int main(int argc, char **argv)
                 break;
             case descriptor_cmd:
                 cmt.str_descriptor = optarg;
+                break;
+            case skip_cmd:
+                {
+                    int ret = sscanf(optarg, "%d", &skip_frames);
+                    if (ret != 1)
+                    {
+                      skip_frames = 0;
+                    }
+                }
                 break;
             case no_scale_cmd:
                 cmt.consensus.estimate_scale = false;
@@ -262,6 +274,12 @@ int main(int argc, char **argv)
     else
     {
         cap.open(input_path);
+
+        if (skip_frames > 0)
+        {
+          cap.set(CV_CAP_PROP_POS_FRAMES, skip_frames);
+        }
+
         show_preview = false;
     }
 
