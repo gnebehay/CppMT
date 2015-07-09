@@ -83,6 +83,7 @@ int main(int argc, char **argv)
     int verbose_flag = 0;
     int bbox_flag = 0;
     int skip_frames = 0;
+    int skip_msecs = 0;
     string input_path;
 
     const int detector_cmd = 1000;
@@ -91,6 +92,7 @@ int main(int argc, char **argv)
     const int no_scale_cmd = 1003;
     const int with_rotation_cmd = 1004;
     const int skip_cmd = 1005;
+    const int skip_msecs_cmd = 1006;
 
     struct option longopts[] =
     {
@@ -105,6 +107,7 @@ int main(int argc, char **argv)
         {"detector", required_argument, 0, detector_cmd},
         {"descriptor", required_argument, 0, descriptor_cmd},
         {"skip", required_argument, 0, skip_cmd},
+        {"skip-msecs", required_argument, 0, skip_msecs_cmd},
         {0, 0, 0, 0}
     };
 
@@ -148,6 +151,15 @@ int main(int argc, char **argv)
                     }
                 }
                 break;
+            case skip_msecs_cmd:
+                {
+                    int ret = sscanf(optarg, "%d", &skip_msecs);
+                    if (ret != 1)
+                    {
+                      skip_msecs = 0;
+                    }
+                }
+                break;
             case no_scale_cmd:
                 cmt.consensus.estimate_scale = false;
                 break;
@@ -158,6 +170,13 @@ int main(int argc, char **argv)
                 return 1;
         }
 
+    }
+
+    // Can only skip frames or milliseconds, not both.
+    if (skip_frames > 0 && skip_msecs > 0)
+    {
+      cerr << "You can only skip frames, or milliseconds, not both." << endl;
+      return 1;
     }
 
     //One argument remains
@@ -278,6 +297,11 @@ int main(int argc, char **argv)
         if (skip_frames > 0)
         {
           cap.set(CV_CAP_PROP_POS_FRAMES, skip_frames);
+        }
+
+        if (skip_msecs > 0)
+        {
+          cap.set(CV_CAP_PROP_POS_MSEC, skip_msecs);
         }
 
         show_preview = false;
