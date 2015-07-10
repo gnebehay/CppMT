@@ -353,7 +353,7 @@ int main(int argc, char **argv)
     //Initialize CMT
     cmt.initialize(im0_gray, rect);
 
-    int frame = 0;
+    int frame = skip_frames;
 
     //Main loop
     while (true)
