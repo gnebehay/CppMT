@@ -302,6 +302,9 @@ int main(int argc, char **argv)
         if (skip_msecs > 0)
         {
           cap.set(CV_CAP_PROP_POS_MSEC, skip_msecs);
+
+          // Now which frame are we on?
+          skip_frames = (int) cap.get(CV_CAP_PROP_POS_FRAMES);
         }
 
         show_preview = false;
@@ -353,7 +356,7 @@ int main(int argc, char **argv)
     //Initialize CMT
     cmt.initialize(im0_gray, rect);
 
-    int frame = 0;
+    int frame = skip_frames;
 
     //Main loop
     while (true)
