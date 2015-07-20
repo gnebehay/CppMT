@@ -84,7 +84,9 @@ int main(int argc, char **argv)
     int bbox_flag = 0;
     int skip_frames = 0;
     int skip_msecs = 0;
+    int output_flag = 0;
     string input_path;
+    string output_path;
 
     const int detector_cmd = 1000;
     const int descriptor_cmd = 1001;
@@ -93,6 +95,7 @@ int main(int argc, char **argv)
     const int with_rotation_cmd = 1004;
     const int skip_cmd = 1005;
     const int skip_msecs_cmd = 1006;
+    const int output_file_cmd = 1007;
 
     struct option longopts[] =
     {
@@ -106,6 +109,7 @@ int main(int argc, char **argv)
         {"bbox", required_argument, 0, bbox_cmd},
         {"detector", required_argument, 0, detector_cmd},
         {"descriptor", required_argument, 0, descriptor_cmd},
+        {"output-file", required_argument, 0, output_file_cmd},
         {"skip", required_argument, 0, skip_cmd},
         {"skip-msecs", required_argument, 0, skip_msecs_cmd},
         {0, 0, 0, 0}
@@ -141,6 +145,10 @@ int main(int argc, char **argv)
                 break;
             case descriptor_cmd:
                 cmt.str_descriptor = optarg;
+                break;
+            case output_file_cmd:
+                output_path = optarg;
+                output_flag = 1;
                 break;
             case skip_cmd:
                 {
