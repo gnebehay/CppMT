@@ -386,6 +386,19 @@ int main(int argc, char **argv)
 
     int frame = skip_frames;
 
+    //Open output file.
+    ofstream output_file;
+
+    if (output_flag)
+    {
+        int msecs = (int) cap.get(CV_CAP_PROP_POS_MSEC);
+
+        output_file.open(output_path.c_str());
+        output_file << frame << "," << msecs << ",";
+        output_file << cmt.points_active.size() << ",";
+        output_file << write_rotated_rect(cmt.bb_rot) << endl;
+    }
+
     //Main loop
     while (true)
     {
@@ -409,13 +422,27 @@ int main(int argc, char **argv)
         //Let CMT process the frame
         cmt.processFrame(im_gray);
 
+        //Output.
+        if (output_flag)
+        {
+            int msecs = (int) cap.get(CV_CAP_PROP_POS_MSEC);
+            output_file << frame << "," << msecs << ",";
+            output_file << cmt.points_active.size() << ",";
+            output_file << write_rotated_rect(cmt.bb_rot) << endl;
+        }
+        else
+        {
+            //TODO: Provide meaningful output
+            FILE_LOG(logINFO) << "#" << frame << " active: " << cmt.points_active.size();
+        }
+
+        //Display image and then quit if requested.
         char key = display(im, cmt);
-
         if(key == 'q') break;
-
-        //TODO: Provide meaningful output
-        FILE_LOG(logINFO) << "#" << frame << " active: " << cmt.points_active.size();
     }
+
+    //Close output file.
+    if (output_flag) output_file.close();
 
     return 0;
 }
