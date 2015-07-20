@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdio>
 
 #ifdef __GNUC__
@@ -67,6 +68,25 @@ int display(Mat im, CMT & cmt)
     imshow(WIN_NAME, im);
 
     return waitKey(5);
+}
+
+string write_rotated_rect(RotatedRect rect)
+{
+    Point2f verts[4];
+    rect.points(verts);
+    stringstream coords;
+
+    coords << rect.center.x << "," << rect.center.y << ",";
+    coords << rect.size.width << "," << rect.size.height << ",";
+    coords << rect.angle << ",";
+
+    for (int i = 0; i < 4; i++)
+    {
+        coords << verts[i].x << "," << verts[i].y;
+        if (i != 3) coords << ",";
+    }
+
+    return coords.str();
 }
 
 int main(int argc, char **argv)
