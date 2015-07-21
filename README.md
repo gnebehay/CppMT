@@ -82,6 +82,7 @@ cmt test.avi
 If your input consists of numbered image files (e.g. im_0001.png, im_0002.png, ...), you can use printf syntax:
 ```
 cmt im_%04d.png
+```
 
 It is also possible to specify the initial bounding box on the command line:
 ```
