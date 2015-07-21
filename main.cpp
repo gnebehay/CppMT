@@ -33,6 +33,15 @@ using std::endl;
 using ::atof;
 
 static string WIN_NAME = "CMT";
+static string OUT_FILE_COL_HEADERS =
+    "Frame,Timestamp (ms),Active points,"\
+    "Bounding box centre X (px),Bounding box centre Y (px),"\
+    "Bounding box width (px),Bounding box height (px),"\
+    "Bounding box rotation (degrees),"\
+    "Bounding box vertex 1 X (px),Bounding box vertex 1 Y (px),"\
+    "Bounding box vertex 2 X (px),Bounding box vertex 2 Y (px),"\
+    "Bounding box vertex 3 X (px),Bounding box vertex 3 Y (px),"\
+    "Bounding box vertex 4 X (px),Bounding box vertex 4 Y (px)";
 
 vector<float> getNextLineAndSplitIntoFloats(istream& str)
 {
@@ -394,6 +403,7 @@ int main(int argc, char **argv)
         int msecs = (int) cap.get(CV_CAP_PROP_POS_MSEC);
 
         output_file.open(output_path.c_str());
+        output_file << OUT_FILE_COL_HEADERS << endl;
         output_file << frame << "," << msecs << ",";
         output_file << cmt.points_active.size() << ",";
         output_file << write_rotated_rect(cmt.bb_rot) << endl;
