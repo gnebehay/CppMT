@@ -52,7 +52,7 @@ For example, vc12 is to be used for Visual Studio 2013.
 
 # Usage
 ```
-usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [--skip N] [--skip-msecs N] [inputpath]
+usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [--skip N] [--skip-msecs N] [--output-file FILE] [inputpath]
 ```
 ## Optional arguments
 * `inputpath` The input path.
@@ -62,6 +62,7 @@ usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [--skip 
 * `--bbox BBOX` Specify initial bounding box. Format: x,y,w,h
 * `--skip N` Skip N frames of the video input
 * `--skip-msecs N` Skip N milliseconds of the video input
+* `--output-file FILE` Save data to a file in CSV format
 
 Trying to skip both frames and milliseconds at the start of a video will raise
 an error.
@@ -88,5 +89,13 @@ It is also possible to specify the initial bounding box on the command line:
 ```
 cmt --bbox=123,85,60,140 test.avi
 ```
+
+You can output data (number of active points, bounding box parameters) to a
+file in CSV format:
+```
+cmt --output-file=/path/to/file.csv test.avi
+```
+The data file includes header data so that it can be loaded into Excel or R
+directly.
 
 [1]: http://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29
