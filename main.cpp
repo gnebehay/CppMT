@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdio>
 
 #ifdef __GNUC__
@@ -32,6 +33,15 @@ using std::endl;
 using ::atof;
 
 static string WIN_NAME = "CMT";
+static string OUT_FILE_COL_HEADERS =
+    "Frame,Timestamp (ms),Active points,"\
+    "Bounding box centre X (px),Bounding box centre Y (px),"\
+    "Bounding box width (px),Bounding box height (px),"\
+    "Bounding box rotation (degrees),"\
+    "Bounding box vertex 1 X (px),Bounding box vertex 1 Y (px),"\
+    "Bounding box vertex 2 X (px),Bounding box vertex 2 Y (px),"\
+    "Bounding box vertex 3 X (px),Bounding box vertex 3 Y (px),"\
+    "Bounding box vertex 4 X (px),Bounding box vertex 4 Y (px)";
 
 vector<float> getNextLineAndSplitIntoFloats(istream& str)
 {
@@ -69,6 +79,25 @@ int display(Mat im, CMT & cmt)
     return waitKey(5);
 }
 
+string write_rotated_rect(RotatedRect rect)
+{
+    Point2f verts[4];
+    rect.points(verts);
+    stringstream coords;
+
+    coords << rect.center.x << "," << rect.center.y << ",";
+    coords << rect.size.width << "," << rect.size.height << ",";
+    coords << rect.angle << ",";
+
+    for (int i = 0; i < 4; i++)
+    {
+        coords << verts[i].x << "," << verts[i].y;
+        if (i != 3) coords << ",";
+    }
+
+    return coords.str();
+}
+
 int main(int argc, char **argv)
 {
     //Create a CMT object
@@ -84,7 +113,9 @@ int main(int argc, char **argv)
     int bbox_flag = 0;
     int skip_frames = 0;
     int skip_msecs = 0;
+    int output_flag = 0;
     string input_path;
+    string output_path;
 
     const int detector_cmd = 1000;
     const int descriptor_cmd = 1001;
@@ -93,6 +124,7 @@ int main(int argc, char **argv)
     const int with_rotation_cmd = 1004;
     const int skip_cmd = 1005;
     const int skip_msecs_cmd = 1006;
+    const int output_file_cmd = 1007;
 
     struct option longopts[] =
     {
@@ -106,6 +138,7 @@ int main(int argc, char **argv)
         {"bbox", required_argument, 0, bbox_cmd},
         {"detector", required_argument, 0, detector_cmd},
         {"descriptor", required_argument, 0, descriptor_cmd},
+        {"output-file", required_argument, 0, output_file_cmd},
         {"skip", required_argument, 0, skip_cmd},
         {"skip-msecs", required_argument, 0, skip_msecs_cmd},
         {0, 0, 0, 0}
@@ -141,6 +174,10 @@ int main(int argc, char **argv)
                 break;
             case descriptor_cmd:
                 cmt.str_descriptor = optarg;
+                break;
+            case output_file_cmd:
+                output_path = optarg;
+                output_flag = 1;
                 break;
             case skip_cmd:
                 {
@@ -358,6 +395,20 @@ int main(int argc, char **argv)
 
     int frame = skip_frames;
 
+    //Open output file.
+    ofstream output_file;
+
+    if (output_flag)
+    {
+        int msecs = (int) cap.get(CV_CAP_PROP_POS_MSEC);
+
+        output_file.open(output_path.c_str());
+        output_file << OUT_FILE_COL_HEADERS << endl;
+        output_file << frame << "," << msecs << ",";
+        output_file << cmt.points_active.size() << ",";
+        output_file << write_rotated_rect(cmt.bb_rot) << endl;
+    }
+
     //Main loop
     while (true)
     {
@@ -381,13 +432,27 @@ int main(int argc, char **argv)
         //Let CMT process the frame
         cmt.processFrame(im_gray);
 
+        //Output.
+        if (output_flag)
+        {
+            int msecs = (int) cap.get(CV_CAP_PROP_POS_MSEC);
+            output_file << frame << "," << msecs << ",";
+            output_file << cmt.points_active.size() << ",";
+            output_file << write_rotated_rect(cmt.bb_rot) << endl;
+        }
+        else
+        {
+            //TODO: Provide meaningful output
+            FILE_LOG(logINFO) << "#" << frame << " active: " << cmt.points_active.size();
+        }
+
+        //Display image and then quit if requested.
         char key = display(im, cmt);
-
         if(key == 'q') break;
-
-        //TODO: Provide meaningful output
-        FILE_LOG(logINFO) << "#" << frame << " active: " << cmt.points_active.size();
     }
+
+    //Close output file.
+    if (output_flag) output_file.close();
 
     return 0;
 }
