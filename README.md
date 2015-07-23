@@ -52,7 +52,8 @@ For example, vc12 is to be used for Visual Studio 2013.
 
 # Usage
 ```
-usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [--skip N] [--skip-msecs N] [--output-file FILE] [inputpath]
+usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX]
+             [--skip N] [--skip-msecs N] [--output-file FILE] [inputpath]
 ```
 ## Optional arguments
 * `inputpath` The input path.
