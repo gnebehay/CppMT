@@ -52,7 +52,9 @@ For example, vc12 is to be used for Visual Studio 2013.
 
 # Usage
 ```
-usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [--skip N] [--skip-msecs N] [--output-file FILE] [inputpath]
+usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX]
+             [--skip N] [--skip-msecs N] [--output-file FILE]
+             [--verbose] [inputpath]
 ```
 ## Optional arguments
 * `inputpath` The input path.
@@ -63,6 +65,7 @@ usage: ./cmt [--challenge] [--no-scale] [--with-rotation] [--bbox BBOX] [--skip 
 * `--skip N` Skip N frames of the video input
 * `--skip-msecs N` Skip N milliseconds of the video input
 * `--output-file FILE` Save data to a file in CSV format
+* `--verbose`, `-v` Turn on debugging console output
 
 Trying to skip both frames and milliseconds at the start of a video will raise
 an error.
