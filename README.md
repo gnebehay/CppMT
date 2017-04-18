@@ -5,7 +5,7 @@ Details can be found on the [project page](http://www.gnebehay.com/cmt).
 The implementation in this repository is platform-independent and runs
 on Linux, Windows and OS X.
 
-#License
+# License
 CppMT is freely available under the [Simplified BSD license][1],
 meaning that you can basically do with the code whatever you want.
 If you use our algorithm in scientific work, please cite our publication
